@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include 'header.html' %}
+
+{% if user.is_authenticated %}
+
+<div class="mx-auto mt-10 px-2 rounded max-w-screen-md">
+    <form method="POST" class="p-3 flex flex-col rounded-md bg-gray-50 shadow-md">
+        {% csrf_token %}
+
+        <h1 class="text-4xl text-blue-500 font-bold mb-10 text-center">Update Workout</h1>
+
+        <div class="flex flex-col mb-5">
+            <label for="workout-name" class="mb-1 text-md text-blue-600">Workout name</label>
+            <input type="text" name="workout-name" value="{{ workout.name }}"
+                class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" required>
+        </div>
+
+        <div class="flex flex-col mb-5">
+            <label for="workout-type" class="mb-1 text-md text-blue-600">Workout type</label>
+            <select name="workout-type" class="p-2 rounded bg-blue-200">
+                {% if workout.type_workout  == "CA" %}
+                <option value="CA" selected>Cardio</option>
+                {% elif workout.type_workout  == "ST" %}
+                <option value="ST" selected>Strength Training</option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div class="mb-5 flex flex-col justify-center items-center">
+            <div id="exercises-container">
+                {% for exercise in exercises %}
+
+                {% if workout.type_workout == "CA" %}
+                <div class="mb-5 grid grid-cols-5 gap-3 rounded">
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" 
+                    type="text" name="type" placeholder="Type" value="{{ exercise.type }}" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" 
+                    type="text" name="duration" placeholder="Duration" value="{{ exercise.duration }}" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" 
+                    type="text" name="distance" placeholder="Distance" value="{{ exercise.distance }}" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" 
+                    type="text" name="pace" placeholder="Pace" value="{{ exercise.pace }}" required>
+                    <button class="bg-red-500 text-white py-1 px-2 rounded-full" type="button" onclick="removeExercise(this)">Delete</button>
+                </div>
+
+                {% elif workout.type_workout == "ST" %}
+                <div class="mb-5 grid grid-cols-5 gap-3 rounded">
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" 
+                    type="text" name="type" placeholder="Type" value="{{ exercise.type }}" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" 
+                    type="text" name="sets" placeholder="Sets" value="{{ exercise.sets }}" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" 
+                    type="text" name="repetitions" placeholder="Repetitions" value="{{ exercise.repetitions }}" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" 
+                    type="text" name="weight" placeholder="Weight" value="{{ exercise.weight }}" required>
+                    <button class="bg-red-500 text-white py-1 px-2 rounded-full" type="button" onclick="removeExercise(this)">Delete</button>
+                </div>
+
+                {% endif %}
+
+                {% endfor %}
+            </div>
+
+            <button class="bg-blue-400 text-white py-1 px-2 rounded-lg" type="button" onclick="addExercise()">Add Exercise</button>
+        </div>
+
+        <button type="submit" class=" mt-6 py-2 px-6 rounded-full font-medium text-lg
+        text-white bg-blue-500 duration-200 border-solid border-2 border-transparent
+        hover:border-blue-700 hover:bg-blue-600">Update</button>
+    </form>
+</div>
+
+<script>
+    const container = document.getElementById('exercises-container');
+    
+    function addExercise() {
+        const workoutType = document.querySelector('select[name="workout-type"]').value;
+        let newExercise = '';
+
+        if (workoutType === 'CA') { // Cardio
+            newExercise = `
+                <div class="mb-5 grid grid-cols-5 gap-3 rounded">
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" type="text" name="type" placeholder="Type" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" type="text" name="duration" placeholder="Duration" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" type="text" name="distance" placeholder="Distance" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" type="text" name="pace" placeholder="Pace" required>
+                    <button class="bg-red-500 text-white py-1 px-2 rounded-full" type="button" onclick="removeExercise(this)">Delete</button>
+                </div>`;
+        } else if (workoutType === 'ST') { // Strength Training
+            newExercise = `
+                <div class="mb-5 grid grid-cols-5 gap-3 rounded">
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" type="text" name="type" placeholder="Type" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" type="text" name="sets" placeholder="Sets" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" type="text" name="repetitions" placeholder="Repetitions" required>
+                    <input class="p-2 bg-white text-gray-600 rounded focus:outline-none focus:ring ring-blue-400" type="text" name="weight" placeholder="Weight" required>
+                    <button class="bg-red-500 text-white py-1 px-2 rounded-full" type="button" onclick="removeExercise(this)">Delete</button>
+                </div>`;
+        }
+        container.insertAdjacentHTML('beforeend', newExercise);
+    }
+
+    function handleWorkoutTypeChange() {
+        const container = document.getElementById('exercises-container');
+        container.innerHTML = '';
+    }
+
+    function removeExercise(button) {
+        button.parentElement.remove();
+    }
+</script>
+
+{% endif %}
+
+{% endblock %}

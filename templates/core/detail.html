@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include 'header.html' %}
+
+{% if user.is_authenticated %}
+
+<div class="container mx-auto mt-10 p-2">
+    <div
+        class="p-3 bg-gray-50 rounded shadow-md flex flex-col justify-center items-center gap-3 mx-auto max-w-screen-sm">
+
+        {% if workout.type_workout == 'CA' %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24" class="fill-blue-600">
+            <circle cx="17" cy="4" r="2"></circle>
+            <path
+                d="M15.777 10.969a2.007 2.007 0 0 0 2.148.83l3.316-.829-.483-1.94-3.316.829-1.379-2.067a2.01 2.01 0 0 0-1.272-.854l-3.846-.77a1.998 1.998 0 0 0-2.181 1.067l-1.658 3.316 1.789.895 1.658-3.317 1.967.394L7.434 17H3v2h4.434c.698 0 1.355-.372 1.715-.971l1.918-3.196 5.169 1.034 1.816 5.449 1.896-.633-1.815-5.448a2.007 2.007 0 0 0-1.506-1.33l-3.039-.607 1.772-2.954.417.625z">
+            </path>
+        </svg>
+        <p class="bg-blue-500 text-white font-medium rounded-full p-1">Cardio</p>
+
+        {% else %}
+
+        <svg class="fill-blue-500" xmlns="http://www.w3.org/2000/svg" width="128" height="128"
+            viewBox="0 0 24 24""><path d=" M6 5v14h3v-6h6v6h3V5h-3v6H9V5zM3 15a1 1 0 0 0 1 1h1V8H4a1 1 0 0 0-1
+            1v2H2v2h1v2zm18-6a1 1 0 0 0-1-1h-1v8h1a1 1 0 0 0 1-1v-2h1v-2h-1V9z"></path></svg>
+        <p class="bg-blue-500 text-white font-medium rounded-full p-1">Strength</p>
+
+
+        {% endif %}
+
+        <p class="text-3xl font-medium text-blue-500">{{ workout.name }}</p>
+
+        <div class="flex gap-2">
+            <a href="{% url 'core:update' workout.id %}" class="bg-blue-500 text-white font-medium rounded p-2 hover:bg-blue-600">Update</a>
+            <button id="btn-modal" class="bg-red-500 text-white font-medium rounded p-2 hover:bg-red-600">Delete</button>
+            <dialog class="rounded-lg px-5 py-24 shadow-md">
+                <form action="{% url 'core:delete' workout.id %}" method="post" class="flex flex-col items-center gap-5">
+                    {% csrf_token %}
+                    <h1 class="text-center text-3xl text-blue-600 font-medium">Delete this workout?</h1>
+                    <div>
+                        <button type="reset" id="close-modal" class="py-1 px-2 text-gray-500 text-lg font-medium hover:underline">Cancel</button>
+                        <button type="submit" class="py-1 px-2 bg-red-500 rounded text-white text-lg font-medium hover:bg-red-600">Delete Workout</button>
+                    </div>
+                </form>
+            </dialog>
+        </div>
+    </div>
+
+    <div class="p-3 mt-5 bg-gray-50 rounded shadow-md mx-auto max-w-screen-sm">
+        <table class="table-auto w-full text-center">
+
+            {% if workout.type_workout == 'CA' %}
+            <thead>
+                <tr class="border-b">
+                    <th class="py-2 text-blue-700 text-left">type</th>
+                    <th class="py-2 text-blue-700">Distance</th>
+                    <th class="py-2 text-blue-700">Duration</th>
+                    <th class="py-2 text-blue-700">Pace</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exercise in exercises %}
+                <tr class="border-b">
+                    <td class="py-2 font-medium text-gray-500 text-left">{{ exercise.type }}</td>
+                    <td class="py-2 font-medium text-gray-500">{{ exercise.distance }}</td>
+                    <td class="py-2 font-medium text-gray-500">{{ exercise.duration }}</td>
+                    <td class="py-2 font-medium text-gray-500">{{ exercise.pace }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            {% else %}
+            <thead>
+                <tr class="border-b">
+                    <th class="py-2 text-blue-700 text-left">Exercise</th>
+                    <th class="py-2 text-blue-700">Sets</th>
+                    <th class="py-2 text-blue-700">Repetitions</th>
+                    <th class="py-2 text-blue-700">Weight (KG's)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exercise in exercises %}
+                <tr class="border-b">
+                    <td class="py-2 font-medium text-gray-500 text-left">{{ exercise.type }}</td>
+                    <td class="py-2 font-medium text-gray-500">{{ exercise.sets }}</td>
+                    <td class="py-2 font-medium text-gray-500">{{ exercise.repetitions }}</td>
+                    <td class="py-2 font-medium text-gray-500">{{ exercise.weight }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+            {% endif %}
+        </table>
+    </div>
+
+</div>
+
+<script>
+    const button = document.querySelector("#btn-modal");
+    const modal = document.querySelector('dialog');
+    const close = document.querySelector('#close-modal');
+
+    button.onclick = () => {
+        modal.showModal()
+    }
+
+    close.onclick = () => {
+        modal.close()
+    }
+</script>
+
+{% endif %}
+
+{% endblock content %}

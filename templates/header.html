@@ -1,0 +1,19 @@
+<header class="py-5 bg-blue-700 border-b">
+    <div class="flex items-center justify-around">
+        <div class="p-1 bg-white rounded-md flex items-center gap-1.5">
+            <svg class="fill-blue-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                viewBox="0 0 24 24""><path d=" M6 5v14h3v-6h6v6h3V5h-3v6H9V5zM3 15a1 1 0 0 0 1 1h1V8H4a1 1 0 0 0-1
+                1v2H2v2h1v2zm18-6a1 1 0 0 0-1-1h-1v8h1a1 1 0 0 0 1-1v-2h1v-2h-1V9z"></path></svg>
+            <h1 class="font-medium text-xl text-blue-700">My Workouts</h1>
+        </div>
+        <nav class="flex items-center gap-4">
+            <a href="{% url 'core:index' %}"
+                class="text-white font-medium text-base transition hover:text-blue-100">Workouts</a>
+            <a href="{% url 'core:create' %}" class="text-white font-medium text-base transition hover:text-blue-200">Create workout</a>
+        </nav>
+        <div>
+            <a href="{% url 'users:logout' %}" class="text-white font-medium transition hover:text-blue-200">Log
+                out</a>
+        </div>
+    </div>
+</header>
